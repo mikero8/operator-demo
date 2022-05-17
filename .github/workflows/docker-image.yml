@@ -1,0 +1,30 @@
+name: build
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Get current date
+      id: get-date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build
+      run: go build -o rest-api
+      
+    - name: Build the Docker image
+      run: 
+        docker login --tls-verify=false ${{secrets.REGISTRY_HOST}} -u ${{secrets.REGISTRY_USERNAME}}  -p ${{secrets.REGISTRY_PASSWORD}} 
+        docker build -t 44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }} . -f Containerfile
+        docker push --tls-verify=false 44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }}
