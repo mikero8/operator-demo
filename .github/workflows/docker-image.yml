@@ -23,10 +23,16 @@ jobs:
     - name: Build
       run: go build -o rest-api
       
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{secrets.REGISTRY_USERNAME}}
+        password: ${{secrets.REGISTRY_PASSWORD}} 
+        registry: http://44.234.50.66
+
     - name: Build the Docker image
       run: |
         export DOCKER_TLS_VERIFY=0
         export DOCKER_OPTS="--insecure-registry=http://44.234.50.66"
-        docker login http://44.234.50.66 -u ${{secrets.REGISTRY_USERNAME}}  -p ${{secrets.REGISTRY_PASSWORD}} 
-        docker build -t http://44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }} . -f Containerfile
+        docker build -t 44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }} . -f Containerfile
         DOCKER_TLS_VERIFY=0 docker push http://44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }}
