@@ -26,6 +26,7 @@ jobs:
     - name: Build the Docker image
       run: |
         export DOCKER_TLS_VERIFY=0
+        export DOCKER_OPTS="--insecure-registry=44.234.50.66"
         docker login ${{secrets.REGISTRY_HOST}} -u ${{secrets.REGISTRY_USERNAME}}  -p ${{secrets.REGISTRY_PASSWORD}} 
         docker build -t 44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }} . -f Containerfile
         DOCKER_TLS_VERIFY=0 docker push 44.234.50.66/testaccount/rest-api:${{ steps.get-date.outputs.date }}
