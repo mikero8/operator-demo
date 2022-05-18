@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
 
@@ -23,14 +23,14 @@ jobs:
     - name: Build
       run: go build -o rest-api
       
-    - name: Login to DockerHub
+    - name: Login to container registry
       uses: docker/login-action@v2
       with:
         username: ${{secrets.REGISTRY_USERNAME}}
         password: ${{secrets.REGISTRY_PASSWORD}} 
         registry: http://44.234.50.66
 
-    - name: Build the Docker image
+    - name: Build the container image
       run: |
         export DOCKER_TLS_VERIFY=0
         export DOCKER_OPTS="--insecure-registry=http://44.234.50.66"
